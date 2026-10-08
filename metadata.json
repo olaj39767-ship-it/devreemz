@@ -1,0 +1,6 @@
+{
+  "name": "Devreemz Gadget",
+  "description": "Devreemz Gadget is Lagos' trusted source for certified, tested iPhones and MacBooks. Guaranteed battery health, clean iCloud, verified IMEI, and payment upon inspection on WhatsApp.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
