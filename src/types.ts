@@ -1,4 +1,13 @@
-export type GadgetCategory = 'phones' | 'laptops' | 'tablets' | 'consoles' | 'smartwatches' | 'accessories';
+export type GadgetCategory =
+  | 'phones'
+  | 'laptops'
+  | 'tablets'
+  | 'consoles'
+  | 'smartwatches'
+  | 'accessories'
+  | 'health-monitors'
+  | 'smart-rings'
+  | 'mobility';
 
 export type ConditionGrade = 'New/Sealed' | 'Like New' | 'Good' | 'Fair';
 

@@ -450,67 +450,12 @@ export const SEED_INVENTORY: GadgetItem[] = [
  * Seed Customer Reviews (Admin-managed, no spam public submission)
  */
 export const SEED_REVIEWS: CustomerReview[] = [
-  {
-    id: 'rev-1',
-    name: 'Chinedu Okafor',
-    location: 'Lekki Phase 1, Lagos',
-    device: 'iPhone 16 Pro Max 256GB',
-    date: '03 Oct 2026',
-    rating: 5,
-    comment: 'No stories at all! Devreemz Gadget brought the phone to my office in Lekki. I personally ran 3uTools, checked the IMEI, verified 100% battery, and inspected before making payment. Genuine people.',
-    verified: true,
-    whatsappScreenshot: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 'rev-2',
-    name: 'Fatima Aliyu',
-    location: 'Victoria Island, Lagos',
-    device: 'MacBook Air 13" M3',
-    date: '28 Sep 2026',
-    rating: 5,
-    comment: 'Swapped my old iPhone 12 Pro for this M3 MacBook Air. Their valuation on WhatsApp was fair and they honored the exact appraisal after in-person inspection. Highly recommend!',
-    verified: true,
-  },
-  {
-    id: 'rev-3',
-    name: 'Babatunde Adeleke',
-    location: 'Ikeja GRA, Lagos',
-    device: 'iPhone 15 Pro Max 256GB',
-    date: '19 Sep 2026',
-    rating: 5,
-    comment: 'The inspection report they issued was spot on. True Tone active, zero parts replaced, authentic screen. It is hard to find honest gadget vendors in Lagos like Devreemz.',
-    verified: true,
-  },
 ];
 
 /**
  * Seed Delivery Proofs
  */
 export const SEED_DELIVERY_PROOFS: DeliveryProof[] = [
-  {
-    id: 'del-1',
-    caption: 'Safe Handover to Engineer Tobi in Victoria Island',
-    location: 'Victoria Island, Lagos',
-    date: '05 Oct 2026',
-    device: 'iPhone 16 Pro Max Desert Titanium',
-    image: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'del-2',
-    caption: 'Direct Pickup at Our Safe Hub in Adeola Odeku',
-    location: 'Adeola Odeku St, VI, Lagos',
-    date: '02 Oct 2026',
-    device: 'MacBook Pro 14" Space Black',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'del-3',
-    caption: 'Express Dispatch to Ikoyi with Full Verification Slip',
-    location: 'Ikoyi, Lagos',
-    date: '29 Sep 2026',
-    device: 'iPhone 15 Black 128GB',
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80',
-  },
 ];
 
 /**

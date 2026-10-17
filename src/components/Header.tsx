@@ -7,10 +7,6 @@ import {
   CaretDown,
   CaretRight,
   WhatsappLogo,
-  Pulse,
-  Medal,
-  ShieldCheck,
-  FileText,
   MagnifyingGlass,
   ChatCircleText,
   Link as LinkIcon,
@@ -67,14 +63,8 @@ const MobileRow: React.FC<MobileRowProps> = ({ icon: Icon, label, hint, large, o
 export const Header: React.FC<HeaderProps> = ({
   config,
   onGoHome,
-  onGoConcierge,
   onBrowseCatalog,
-  onOpenSellTradeIn,
-  onOpenDiagnostics,
   onOpenWantList,
-  onOpenConditionGuide,
-  onOpenWarrantyLookup,
-  onOpenGuide,
   onOpenBioLinks,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -86,6 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
   const whatsappHref = `https://wa.me/${getCleanWhatsAppNumber(config)}?text=${encodeURIComponent(
     `Hello ${config.businessName}, I have a question.`
   )}`;
+  const handleWhatsAppSupport = () => window.open(whatsappHref, '_blank', 'noopener,noreferrer');
 
   const initials = config.businessName
     .split(/\s+/)
@@ -161,10 +152,8 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const verifyItems: { label: string; hint: string; icon: React.ElementType; onClick: () => void }[] = [
-    { label: 'Device diagnostics', hint: 'Quick browser health check', icon: Pulse, onClick: onOpenDiagnostics },
-    { label: 'Condition grading', hint: 'How we grade every phone', icon: Medal, onClick: onOpenConditionGuide },
-    { label: 'Warranty lookup', hint: 'Check your cover by IMEI', icon: ShieldCheck, onClick: onOpenWarrantyLookup },
-    { label: 'Battery & iCloud guide', hint: 'Check a phone yourself', icon: FileText, onClick: onOpenGuide },
+    { label: 'Product advice', hint: 'Ask about our health technology', icon: ChatCircleText, onClick: handleWhatsAppSupport },
+    { label: 'Request a device', hint: 'Ask us to source a health product', icon: MagnifyingGlass, onClick: onOpenWantList },
   ];
 
   const Logo = (
@@ -201,10 +190,10 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             <button
-              onClick={() => run(onOpenSellTradeIn)}
+              onClick={() => run(onOpenWantList)}
               className={`px-3 min-h-[44px] text-sm font-medium text-slate-300 hover:text-white transition-colors rounded-lg ${focusRing}`}
             >
-              Trade-In
+              Request a device
             </button>
 
             <div className="relative" ref={verifyRef}>
@@ -216,7 +205,7 @@ export const Header: React.FC<HeaderProps> = ({
                   verifyOpen ? 'text-white' : 'text-slate-300'
                 } ${focusRing}`}
               >
-                How we verify
+                Get help
                 <CaretDown
                   size={14}
                   weight="regular"
@@ -306,7 +295,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Mobile">
             <MobileRow large label="Shop" onClick={() => run(onBrowseCatalog)} />
-            <MobileRow large label="Trade-In" onClick={() => run(onOpenSellTradeIn)} />
+            <MobileRow large label="Request a device" onClick={() => run(onOpenWantList)} />
 
             <p className="px-2 pt-6 pb-1 text-sm text-slate-400">How we verify</p>
             {verifyItems.map(({ label, hint, icon, onClick }) => (
@@ -316,14 +305,14 @@ export const Header: React.FC<HeaderProps> = ({
             <p className="px-2 pt-6 pb-1 text-sm text-slate-400">More</p>
             <MobileRow
               icon={MagnifyingGlass}
-              label="Request a phone"
+              label="Request a health device"
               hint="Can't find it? We'll source it"
               onClick={() => run(onOpenWantList)}
             />
             <MobileRow
               icon={ChatCircleText}
               label="Chat with our assistant"
-              onClick={() => run(onGoConcierge)}
+              onClick={() => run(handleWhatsAppSupport)}
             />
             <MobileRow icon={LinkIcon} label="Our links" onClick={() => run(onOpenBioLinks)} />
           </nav>

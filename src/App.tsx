@@ -52,7 +52,7 @@ import {
 } from 'lucide-react';
 
 const STORAGE_KEY_CONFIG = 'devreemz_store_config_v1';
-const STORAGE_KEY_INVENTORY = 'devreemz_inventory_v1';
+const STORAGE_KEY_INVENTORY = 'devreemz_health_inventory_v1';
 const STORAGE_KEY_REVIEWS = 'devreemz_reviews_v1';
 const STORAGE_KEY_DELIVERY_PROOFS = 'devreemz_delivery_proofs_v1';
 const STORAGE_KEY_WARRANTIES = 'devreemz_warranties_v1';
@@ -87,7 +87,14 @@ export default function App() {
           parsed.whatsapp = '+234 903 847 6114';
           parsed.phone = '+234 903 847 6114';
         }
-        return { ...DEFAULT_STORE_CONFIG, ...parsed };
+        const mergedConfig = { ...DEFAULT_STORE_CONFIG, ...parsed };
+        if (/\b(iPhones?|MacBooks?|Apple)\b/i.test(mergedConfig.tagline)) {
+          mergedConfig.tagline = DEFAULT_STORE_CONFIG.tagline;
+        }
+        if (/\b(iPhones?|MacBooks?|Apple|iCloud|IMEI|battery health)\b/i.test(mergedConfig.announcementBanner)) {
+          mergedConfig.announcementBanner = DEFAULT_STORE_CONFIG.announcementBanner;
+        }
+        return mergedConfig;
       }
     } catch {}
     return DEFAULT_STORE_CONFIG;
@@ -148,7 +155,7 @@ export default function App() {
   // Modals & Sheets State
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
-  const [catalogBudgetFilter, setCatalogBudgetFilter] = useState<number | undefined>(undefined);
+  const [catalogFilter, setCatalogFilter] = useState<{ category?: string; maxBudget?: number }>();
   const [selectedProduct, setSelectedProduct] = useState<GadgetItem | null>(null);
   const [isSellModalOpen, setIsSellModalOpen] = useState(false);
   const [isWantListOpen, setIsWantListOpen] = useState(false);
@@ -256,12 +263,12 @@ export default function App() {
     {
       id: 'welcome-msg',
       sender: 'concierge',
-      text: `👋 Welcome to **Devreemz Gadget**\n*Sleek • Trustworthy • Reliable*\n\nWe specialize in brand-new and certified pre-owned iPhones and MacBooks with verified testing and guaranteed warranties.\n\nWhat can we assist you with today?\n• *iphones* — explore verified in-stock iPhones\n• *macbooks* — filter certified MacBooks\n• *swap* — instant trade-in appraisal\n• *consult* — custom advice on the best model for your needs\n• *diagnostics* — live hardware check\n\nTell me what you need, or choose an option below.`,
+      text: `👋 Welcome to **Devreemz Gadget**\n*Health technology for everyday life*\n\nExplore health monitors, smartwatches, smart rings and mobility devices. Browse the catalog or contact our team to ask about a product, availability and warranty details.\n\nHealth devices can help you track information, but they do not replace professional medical advice.`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       recommendedAction: 'BROWSE_CATALOG',
       actionLabel: 'Browse In-Stock Inventory',
       actionDetail: `${INVENTORY_ITEMS.length} verified devices ready for delivery`,
-      suggestedPrompts: ['iphones', 'macbooks', 'swap', 'consult', 'diagnostics'],
+      suggestedPrompts: ['Blood pressure monitors', 'Smartwatches', 'Smart rings', 'Mobility devices'],
       source: 'local',
     },
   ]);
@@ -347,12 +354,12 @@ export default function App() {
       const fallbackMsg: ChatMessage = {
         id: `concierge-${Date.now()}`,
         sender: 'concierge',
-        text: `We have several verified options matching your search. Every phone includes verified battery health, clean iCloud, and our guaranteed inspection before payment on WhatsApp!`,
+        text: `Here are some options that may match your search. Contact our team to confirm current availability, product details and warranty coverage.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         recommendedAction: 'BROWSE_CATALOG',
         actionLabel: 'Browse All Inventory',
         actionDetail: 'Filter by budget and specs',
-        suggestedPrompts: ['iphones', 'macbooks', 'swap', 'consult', 'diagnostics'],
+        suggestedPrompts: ['Blood pressure monitors', 'Smartwatches', 'Smart rings', 'Mobility devices'],
         source: 'local',
       };
       setMessages((prev) => [...prev, fallbackMsg]);
@@ -371,7 +378,7 @@ export default function App() {
       recommendedAction: 'BROWSE_CATALOG',
       actionLabel: 'Browse Replacement Devices',
       actionDetail: 'Pick your upgrade from inventory',
-      suggestedPrompts: ['iphones', 'macbooks', 'consult', 'diagnostics'],
+      suggestedPrompts: ['Blood pressure monitors', 'Smartwatches', 'Smart rings', 'Mobility devices'],
       source: 'local',
     };
     setMessages((prev) => [...prev, tradeInCardMessage]);
@@ -388,7 +395,7 @@ export default function App() {
       recommendedAction: 'BROWSE_CATALOG',
       actionLabel: 'Explore In-Stock Models',
       actionDetail: 'See what we have right now',
-      suggestedPrompts: ['iphones', 'macbooks', 'swap', 'consult'],
+      suggestedPrompts: ['Blood pressure monitors', 'Smartwatches', 'Smart rings', 'Mobility devices'],
       source: 'local',
     };
     setMessages((prev) => [...prev, wantListCardMessage]);
@@ -399,17 +406,13 @@ export default function App() {
     setSelectedProduct(null);
     setCurrentView('concierge');
     handleSendMessage(
-      `Tell me about the ${product.name} - what is the verified battery health, iCloud status, and what comes in the box?`
+      `Tell me about the ${product.name} - what features, warranty and included accessories should I know about?`
     );
   };
 
-  // Browse catalog from homepage (with optional budget filter)
+  // Browse the catalog from homepage with an optional category or budget filter
   const handleOpenCatalogWithFilter = (filter?: { category?: string; maxBudget?: number }) => {
-    if (filter?.maxBudget) {
-      setCatalogBudgetFilter(filter.maxBudget);
-    } else {
-      setCatalogBudgetFilter(undefined);
-    }
+    setCatalogFilter(filter);
     setIsCatalogOpen(true);
   };
 
@@ -542,7 +545,7 @@ export default function App() {
                   enterKeyHint="send"
                   value={inputVal}
                   onChange={(e) => setInputVal(e.target.value)}
-                  placeholder="Ask e.g. 'iPhone 15 Pro in stock?', 'Trade in my 13 Pro', 'Under ₦1M'..."
+                  placeholder="Ask about blood pressure monitors, smart rings, or mobility devices..."
                   className="w-full bg-white/10 text-white placeholder:text-[#C0C7D2]/60 text-xs sm:text-sm rounded-xl pl-4 pr-11 py-2.5 sm:py-3 border border-[#C0C7D2]/30 focus:bg-white/15 focus:outline-none focus:border-[#1E6BFF] transition-all min-h-[44px]"
                 />
                 {inputVal.trim() && (
@@ -599,7 +602,7 @@ export default function App() {
           setSelectedProduct(item);
         }}
         config={config}
-        initialFilter={catalogBudgetFilter ? { maxBudget: catalogBudgetFilter } : undefined}
+        initialFilter={catalogFilter}
       />
 
       {/* Product Detail Modal */}

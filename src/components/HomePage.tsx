@@ -1,31 +1,24 @@
 import React, { useState } from 'react';
 import { GadgetItem, StoreConfig, CustomerReview, DeliveryProof } from '../types';
 import { ProductCard } from './ProductCard';
-import { buildGeneralInquiryUrl, formatNaira, getCleanWhatsAppNumber, getWhatsAppDisplay } from '../utils/whatsapp';
+import { buildGeneralInquiryUrl, getCleanWhatsAppNumber, getWhatsAppDisplay } from '../utils/whatsapp';
 import { trackEvent } from '../utils/analytics';
 import {
   ShieldCheck,
   CheckCircle2,
-  Sparkles,
   ArrowRight,
   Phone,
-  ArrowLeftRight,
   ShoppingBag,
-  Cpu,
-  BatteryCharging,
-  Lock,
   ChevronDown,
   ChevronUp,
   MapPin,
-  Clock,
   Instagram,
   Star,
   ExternalLink,
-  MessageSquare,
-  HelpCircle,
+  HeartPulse,
+  Watch,
+  Accessibility,
   Activity,
-  FileText,
-  Search
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -50,12 +43,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   reviews,
   deliveryProofs,
   onBrowseCatalog,
-  onOpenTradeIn,
-  onOpenConcierge,
   onSelectProduct,
-  onOpenDiagnostics,
-  onOpenWarrantyLookup,
-  onOpenGuide,
   onOpenAbout,
   onOpenWarrantyPolicy,
 }) => {
@@ -67,63 +55,65 @@ export const HomePage: React.FC<HomePageProps> = ({
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  // Filter featured devices
-  const featuredPhones = inventory.filter((item) => item.featured || item.isNew).slice(0, 6);
-  const newlyArrived = inventory.slice(0, 4);
+  const featuredDevices = inventory.filter((item) => item.featured || item.isNew).slice(0, 6);
 
-  // Budget card presets
-  const budgetTiers = [
+  const healthCategories = [
     {
-      title: 'Under ₦600k',
-      subtitle: 'iPhone 12 & iPhone 13',
-      range: '₦350,000 – ₦590,000',
-      maxBudget: 600000,
-      badge: 'Best Value',
+      title: 'Blood pressure monitors',
+      description: 'Simple at-home readings and everyday health checks.',
+      category: 'health-monitors',
+      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=85',
+      alt: 'Healthcare professional helping someone with a health check',
+      icon: HeartPulse,
     },
     {
-      title: '₦600k – ₦1.0M',
-      subtitle: 'iPhone 13 Pro & iPhone 14/15',
-      range: '₦600,000 – ₦1,000,000',
-      maxBudget: 1000000,
-      badge: 'Most Popular',
+      title: 'Smartwatches',
+      description: 'Wearable activity, sleep and wellness tracking.',
+      category: 'smartwatches',
+      image: 'https://images.unsplash.com/photo-1544117519-31a4b719223d?auto=format&fit=crop&w=900&q=85',
+      alt: 'Smartwatch worn on a wrist',
+      icon: Watch,
     },
     {
-      title: '₦1.0M – ₦1.6M',
-      subtitle: 'iPhone 15 Pro & iPhone 16',
-      range: '₦1,000,000 – ₦1,600,000',
-      maxBudget: 1600000,
-      badge: 'Pro Tier',
+      title: 'Smart rings',
+      description: 'Low-profile wellness tracking, day and night.',
+      category: 'smart-rings',
+      image: 'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=85',
+      alt: 'Minimal wearable ring',
+      icon: Activity,
     },
     {
-      title: '₦1.6M+ Flagship',
-      subtitle: 'iPhone 16 Pro Max & M3 MacBooks',
-      range: '₦1,600,000 – ₦3,500,000',
-      maxBudget: 4000000,
-      badge: 'Ultimate Power',
+      title: 'Mobility support',
+      description: 'Thoughtful mobility devices for more independence.',
+      category: 'mobility',
+      alt: 'Person using a wheelchair',
+      icon: Accessibility,
+      image: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a0/UNAwheel_Mini_Basic_wheelchair_power_add-on_01.jpg/960px-UNAwheel_Mini_Basic_wheelchair_power_add-on_01.jpg',
+      credit: 'Photo: Nick Yudin · Wikimedia Commons · CC BY-SA 4.0',
+      creditUrl: 'https://commons.wikimedia.org/wiki/File:UNAwheel_Mini_Basic_wheelchair_power_add-on_01.jpg',
     },
   ];
 
-  // FAQ Items (Honest, zero online payment)
   const faqItems = [
     {
-      q: 'How do payment and delivery work? Can I inspect first?',
-      a: 'Payment and delivery are arranged directly with us on WhatsApp. You can inspect the phone before paying! We offer same-day direct dispatch in Lagos or safe in-person pickup at our Victoria Island exchange hub. You test True Tone, Face ID, camera, and battery health before you pay a single kobo.',
+      q: 'What kind of health technology can I find here?',
+      a: 'We are building a considered range of blood pressure monitors, smartwatches, smart rings, mobility devices and other practical health technology. Browse current stock or message us to ask about a specific item.',
     },
     {
-      q: 'Why do you not have an online shopping cart or card checkout?',
-      a: 'At Devreemz Gadget, we believe buying high-value Apple electronics in Lagos requires real trust and personal touch. Automated carts cannot answer condition questions or let you inspect devices. Every order is handled directly by a human on WhatsApp who sends live videos, IMEI proofs, and schedules your inspection.',
+      q: 'Can you help me choose the right device?',
+      a: 'Yes. Tell our team what you are looking for and we can help compare product features, fit and availability. For medical concerns or interpreting readings, please speak with a qualified healthcare professional.',
     },
     {
-      q: 'What is your warranty policy on pre-owned and new iPhones?',
-      a: 'Certified pre-owned phones carry our 7-day in-house instant replacement warranty plus 30 days of technical support. Brand-new sealed iPhones carry full 1-year official manufacturer warranty. You can also look up any active warranty status on our website anytime using your IMEI.',
+      q: 'How do payment and delivery work?',
+      a: 'Message us on WhatsApp to confirm current availability, delivery options and payment details before placing an order.',
     },
     {
-      q: 'How do you verify battery health and iCloud activation lock?',
-      a: 'Every single phone passes a multi-point hardware diagnostic before listing. We verify that iCloud / Find My iPhone is 100% clean and turned off, that the display and camera are OEM Apple parts without warnings, and we upload actual battery health screenshots to every product page.',
+      q: 'Are products covered by a warranty?',
+      a: 'Warranty coverage depends on the product. Ask us to confirm the applicable warranty and support details for an item before you order.',
     },
     {
-      q: 'Can I swap or trade in my current device?',
-      a: 'Yes! Use our Trade-In calculator to pick your current model, storage, and battery health for an instant estimate. Send the request to our WhatsApp, bring your device for physical inspection in Victoria Island, and pay only the difference.',
+      q: 'Can I use a health device instead of medical advice?',
+      a: 'No. Consumer health devices can help you track information, but they do not replace diagnosis or treatment. Follow the device instructions and consult a qualified healthcare professional about your health.',
     },
   ];
 
@@ -140,151 +130,124 @@ export const HomePage: React.FC<HomePageProps> = ({
       )}
 
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50/50 pt-8 sm:pt-14 pb-12 sm:pb-20 border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-3xl mx-auto space-y-4 sm:space-y-6">
-            {/* Top pill badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-[#1E6BFF]/30 text-xs font-bold text-[#1E6BFF] shadow-2xs">
-              <ShieldCheck className="w-4 h-4 text-[#1E6BFF]" />
-              <span>Certified Lagos Apple Specialist • Inspected Before You Pay</span>
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-sky-50 py-10 sm:py-16 border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+          <div className="space-y-5 sm:space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800 shadow-2xs">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Practical health technology, with people-first support</span>
             </div>
 
-            {/* Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight text-[#0A1628] leading-[1.1]">
-              Verified iPhones.{' '}
-              <span className="text-[#1E6BFF] underline decoration-blue-200 decoration-wavy underline-offset-8">
-                No stories.
-              </span>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight text-[#0A1628] leading-[1.06]">
+              Health tech for{' '}
+              <span className="text-emerald-700">everyday life.</span>
             </h1>
 
-            {/* Subhead */}
-            <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Every unit tested for genuine parts, true battery health, and clean iCloud. 
-              No shady online checkout — arrange inspection and pay directly on WhatsApp.
+            <p className="text-base sm:text-lg text-gray-600 max-w-xl leading-relaxed">
+              Explore blood pressure monitors, smartwatches, smart rings and mobility devices — thoughtfully chosen to help you monitor, move and feel more informed.
             </p>
 
-            {/* 3 Hero CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
               <button
                 type="button"
                 onClick={() => onBrowseCatalog()}
                 className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-[#0A1628] hover:bg-[#0A1628]/90 text-white font-bold text-xs sm:text-sm shadow-md shadow-[#0A1628]/20 transition-all active:scale-97 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <ShoppingBag className="w-4 h-4 text-[#1E6BFF]" />
-                <span>Browse iPhones ({inventory.length})</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={onOpenTradeIn}
-                className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-white hover:bg-slate-50 text-[#0A1628] font-bold text-xs sm:text-sm border border-gray-300 shadow-xs transition-all active:scale-97 flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <ArrowLeftRight className="w-4 h-4 text-amber-600" />
-                <span>Trade in your iPhone</span>
+                <ShoppingBag className="w-4 h-4 text-emerald-300" />
+                <span>Explore health tech</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleGeneralWhatsApp}
-                className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-600/30 transition-all active:scale-97 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-white hover:bg-emerald-50 text-[#0A1628] font-bold text-xs sm:text-sm border border-gray-300 shadow-xs transition-all active:scale-97 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Phone className="w-4 h-4" />
-                <span>Chat on WhatsApp</span>
+                <HeartPulse className="w-4 h-4 text-emerald-700" />
+                <span>Ask a health tech specialist</span>
               </button>
             </div>
 
-            {/* Live WhatsApp number indicator */}
-            <div className="pt-2 flex items-center justify-center gap-4 text-xs text-gray-500 font-medium">
+            <div className="pt-1 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500 font-medium">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 Live on WhatsApp: <strong>{getWhatsAppDisplay(config)}</strong>
               </span>
-              <span>•</span>
-              <span>Pickup Hub: Victoria Island, Lagos</span>
+              <span className="hidden sm:inline">•</span>
+              <span>{config.pickupLocation}</span>
+            </div>
+          </div>
+
+          <div className="relative min-h-[340px] sm:min-h-[440px]">
+            <div className="absolute inset-5 sm:inset-8 rounded-[2rem] overflow-hidden shadow-2xl shadow-emerald-950/15">
+              <img
+                src={healthCategories[1].image}
+                alt="Wearable health technology for everyday wellness"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628]/65 via-transparent to-transparent" />
+              <div className="absolute left-5 right-5 bottom-5 text-white">
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">Smarter everyday care</span>
+                <p className="mt-1 text-xl sm:text-2xl font-bold font-display">Technology that moves with you.</p>
+              </div>
+            </div>
+            <div className="absolute top-0 right-0 w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border-4 border-white shadow-xl rotate-3">
+              <img src={healthCategories[0].image} alt={healthCategories[0].alt} className="w-full h-full object-cover" />
+            </div>
+            <div className="absolute bottom-0 left-0 w-32 h-28 sm:w-40 sm:h-32 rounded-2xl overflow-hidden border-4 border-white shadow-xl -rotate-3">
+              <img src={healthCategories[3].image} alt={healthCategories[3].alt} className="w-full h-full object-cover" />
+            </div>
+            <div className="absolute bottom-8 right-0 sm:right-2 w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-4 border-white shadow-xl rotate-3">
+              <img src={healthCategories[2].image} alt={healthCategories[2].alt} className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. "HOW WE VERIFY EVERY PHONE" STRIP */}
+      {/* 2. OUR CUSTOMER SUPPORT */}
       <section className="bg-white border-b border-gray-200 py-6 sm:py-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-6">
             <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 block mb-1">
-              Devreemz Quality Standard
+              A more helpful way to shop
             </span>
             <h2 className="text-lg sm:text-xl font-bold font-display text-[#0A1628]">
-              How We Verify Every Single Phone
+              Health tech, with the support to choose confidently
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
-            <div className="p-3.5 bg-slate-50 rounded-2xl border border-gray-200 space-y-1.5">
-              <div className="w-8 h-8 rounded-lg bg-blue-100/70 text-[#1E6BFF] flex items-center justify-center font-bold text-xs">
-                1
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            {[
+              ['Clear product details', 'Straightforward specs, condition and included accessories for every listing.'],
+              ['Guidance that listens', 'Get help comparing features and finding a device that suits your needs.'],
+              ['Careful selection', 'Explore practical options across monitoring, wearables and mobility.'],
+              ['Support after purchase', 'Our team is here to help with product and warranty questions.'],
+            ].map(([title, description], index) => (
+              <div key={title} className="p-4 bg-slate-50 rounded-2xl border border-gray-200 space-y-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                  0{index + 1}
+                </div>
+                <h3 className="text-sm font-bold text-[#0A1628]">{title}</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">{description}</p>
               </div>
-              <h3 className="text-xs sm:text-sm font-bold text-[#0A1628]">IMEI Checked</h3>
-              <p className="text-[11px] text-gray-500 leading-normal">
-                Global blacklist &amp; carrier financing checked. 100% clean status.
-              </p>
-            </div>
-
-            <div className="p-3.5 bg-slate-50 rounded-2xl border border-gray-200 space-y-1.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-100/70 text-emerald-700 flex items-center justify-center font-bold text-xs">
-                2
-              </div>
-              <h3 className="text-xs sm:text-sm font-bold text-[#0A1628]">Battery Tested</h3>
-              <p className="text-[11px] text-gray-500 leading-normal">
-                True cycles &amp; maximum capacity verified with actual screenshot.
-              </p>
-            </div>
-
-            <div className="p-3.5 bg-slate-50 rounded-2xl border border-gray-200 space-y-1.5">
-              <div className="w-8 h-8 rounded-lg bg-purple-100/70 text-purple-700 flex items-center justify-center font-bold text-xs">
-                3
-              </div>
-              <h3 className="text-xs sm:text-sm font-bold text-[#0A1628]">iCloud Confirmed</h3>
-              <p className="text-[11px] text-gray-500 leading-normal">
-                Find My iPhone off. Ready for instant new Apple ID setup on the spot.
-              </p>
-            </div>
-
-            <div className="p-3.5 bg-slate-50 rounded-2xl border border-gray-200 space-y-1.5">
-              <div className="w-8 h-8 rounded-lg bg-amber-100/70 text-amber-700 flex items-center justify-center font-bold text-xs">
-                4
-              </div>
-              <h3 className="text-xs sm:text-sm font-bold text-[#0A1628]">Parts Inspected</h3>
-              <p className="text-[11px] text-gray-500 leading-normal">
-                Authentic screen &amp; cameras. Zero replacement warning messages.
-              </p>
-            </div>
-
-            <div className="col-span-2 md:col-span-1 p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-1.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
-                5
-              </div>
-              <h3 className="text-xs sm:text-sm font-bold text-emerald-950">Tested Before Pay</h3>
-              <p className="text-[11px] text-emerald-800 leading-normal">
-                Hold, inspect, test Face ID and cameras personally before paying.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 3. FEATURED IN-STOCK PHONES */}
+      {/* 3. FEATURED HEALTH TECH */}
+      {featuredDevices.length > 0 && (
       <section className="py-10 sm:py-16 bg-slate-50/50 border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-8">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-[#1E6BFF] block mb-1">
-                Verified In-Stock Units
+                Thoughtfully selected
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold font-display text-[#0A1628]">
-                Featured iPhones &amp; MacBooks
+                Featured health technology
               </h2>
               <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                Real photos, tested hardware, and guaranteed warranties.
+                Useful technology for home health, daily wellness and mobility.
               </p>
             </div>
 
@@ -298,10 +261,10 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {featuredPhones.map((phone) => (
+            {featuredDevices.map((device) => (
               <ProductCard
-                key={phone.id}
-                item={phone}
+              key={device.id}
+              item={device}
                 config={config}
                 onSelect={onSelectProduct}
               />
@@ -309,51 +272,75 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </div>
       </section>
+      )}
 
-      {/* 4. SHOP BY BUDGET CARDS */}
+      {/* 4. SHOP BY HEALTH NEED */}
       <section className="py-10 sm:py-14 bg-white border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-xl mx-auto mb-8">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#1E6BFF] block mb-1">
-              Curated Pricing
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">
+              Find what fits your life
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold font-display text-[#0A1628]">
-              Shop By Budget
+              Explore health tech
             </h2>
             <p className="text-xs sm:text-sm text-gray-500 mt-1">
-              Click any tier to open the catalog pre-filtered for your target price.
+              From a simple home check to wearable tracking and everyday mobility support.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-            {budgetTiers.map((tier, idx) => (
-              <div
-                key={idx}
-                onClick={() => onBrowseCatalog({ maxBudget: tier.maxBudget })}
-                className="group p-5 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-gray-200 hover:border-[#1E6BFF] transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-md active:scale-98"
-              >
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-[#1E6BFF] inline-block mb-3">
-                    {tier.badge}
-                  </span>
-                  <h3 className="text-lg font-bold text-[#0A1628] font-display group-hover:text-[#1E6BFF] transition-colors">
-                    {tier.title}
-                  </h3>
-                  <p className="text-xs font-medium text-gray-600 mt-1">
-                    {tier.subtitle}
-                  </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {healthCategories.map((category) => {
+              const Icon = category.icon;
+              return (
+                <div
+                  key={category.category}
+                  className="rounded-2xl overflow-hidden bg-white border border-gray-200 hover:border-emerald-400 shadow-sm hover:shadow-lg transition-all"
+                >
+                  <button
+                    type="button"
+                    onClick={() => onBrowseCatalog({ category: category.category })}
+                    className="group w-full text-left cursor-pointer"
+                  >
+                    <div className="relative h-44 overflow-hidden bg-slate-100">
+                      <img
+                        src={category.image}
+                        alt={category.alt}
+                        loading="lazy"
+                        className={`w-full h-full transition-transform duration-300 ${
+                          category.category === 'mobility'
+                            ? 'object-contain p-2 bg-white'
+                            : 'object-cover group-hover:scale-105'
+                        }`}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628]/50 to-transparent" />
+                      <span className="absolute bottom-3 left-3 w-10 h-10 rounded-xl bg-white/95 text-emerald-700 flex items-center justify-center shadow">
+                        <Icon className="w-5 h-5" />
+                      </span>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-base font-bold text-[#0A1628] font-display group-hover:text-emerald-700 transition-colors">
+                        {category.title}
+                      </h3>
+                      <p className="mt-1 text-xs text-gray-600 leading-relaxed">{category.description}</p>
+                      <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700">
+                        Explore category <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </div>
+                  </button>
+                  {'credit' in category && category.credit && (
+                    <a
+                      href={category.creditUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block px-4 pb-3 text-[10px] text-gray-500 hover:text-gray-700"
+                    >
+                      {category.credit}
+                    </a>
+                  )}
                 </div>
-
-                <div className="mt-6 pt-3 border-t border-gray-200/80 flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#0A1628] tabular-nums">
-                    {tier.range}
-                  </span>
-                  <span className="p-1.5 rounded-lg bg-white group-hover:bg-[#1E6BFF] text-gray-400 group-hover:text-white transition-all shadow-2xs">
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -363,13 +350,13 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-xl mx-auto mb-10">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 block mb-1">
-              Zero Stress • Complete Transparency
+              Helpful from first question to delivery
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold font-display text-[#0A1628]">
-              How Buying Works at Devreemz Gadget
+              A simple way to find your health tech
             </h2>
             <p className="text-xs sm:text-sm text-gray-500 mt-1">
-              3 straightforward steps without payment gateways or hidden surprises.
+              Personal support for choosing the product that fits your everyday needs.
             </p>
           </div>
 
@@ -380,10 +367,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                 01
               </div>
               <h3 className="text-base font-bold text-[#0A1628] font-display">
-                1. Pick a Phone
+                1. Find what fits
               </h3>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                Browse our verified catalog with real photos, battery health screenshots, specs, and verification reports.
+                Explore clear product details across health monitors, wearables and mobility devices.
               </p>
             </div>
 
@@ -396,7 +383,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 2. Chat with Us on WhatsApp
               </h3>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                Tap "Order on WhatsApp" to connect with a specialist. We confirm current stock, share video previews, and discuss trade-ins.
+                Ask our team about features, sizing, availability, warranty and delivery before you order.
               </p>
             </div>
 
@@ -409,7 +396,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 3. Inspect, Pay &amp; Collect
               </h3>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                Inspect the device physically, run any diagnostic you want, confirm battery and iCloud. Pay directly only once you are 100% satisfied.
+                Confirm the details with us and choose a delivery or pickup option that works for you.
               </p>
             </div>
           </div>
@@ -417,6 +404,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {/* 6. CUSTOMER REVIEWS & DELIVERY PROOFS (ADMIN-MANAGED) */}
+      {(reviews.length > 0 || deliveryProofs.length > 0) && (
       <section className="py-12 sm:py-18 bg-white border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-8">
@@ -428,7 +416,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 Reviews &amp; Delivery Proof
               </h2>
               <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                Verified Lagos buyers who inspected their phones before paying.
+                Feedback from customers who shopped with our team.
               </p>
             </div>
 
@@ -495,6 +483,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </div>
       </section>
+      )}
 
       {/* 7. FAQ ACCORDION */}
       <section className="py-12 sm:py-16 bg-slate-50 border-b border-gray-200">
@@ -557,7 +546,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </span>
               </div>
               <p className="text-xs text-[#C0C7D2] leading-relaxed">
-                Lagos' certified Apple device destination. Tested IMEI, honest battery health, and payment on inspection.
+                Health technology for everyday life, with helpful product guidance and support from our team.
               </p>
               <div className="text-xs text-white font-semibold">
                 WhatsApp: {getWhatsAppDisplay(config)}
@@ -576,24 +565,14 @@ export const HomePage: React.FC<HomePageProps> = ({
                   </button>
                 </li>
                 <li>
-                  <button onClick={onOpenTradeIn} className="hover:text-white transition-colors">
-                    Trade-In Valuation
+                  <button onClick={() => onBrowseCatalog()} className="hover:text-white transition-colors">
+                    Health Tech Catalog
                   </button>
                 </li>
                 <li>
-                  <button onClick={onOpenDiagnostics} className="hover:text-white transition-colors">
-                    Hardware Diagnostics
-                  </button>
-                </li>
-                <li>
-                  <button onClick={onOpenWarrantyLookup} className="hover:text-white transition-colors">
-                    Warranty Status Lookup
-                  </button>
-                </li>
-                <li>
-                  <button onClick={onOpenGuide} className="hover:text-white transition-colors">
-                    Battery &amp; iCloud Guide
-                  </button>
+                  <a href={`https://wa.me/${getCleanWhatsAppNumber(config)}`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                    Ask a Health Tech Specialist
+                  </a>
                 </li>
               </ul>
             </div>
@@ -674,9 +653,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             <p>
               &copy; {new Date().getFullYear()} {config.businessName}. All rights reserved.
             </p>
-            {/* Requirement C footer note: "Devreemz Gadget is not affiliated with Apple Inc." */}
             <p className="font-semibold text-gray-400">
-              Devreemz Gadget is an independent electronics retailer and is not affiliated with Apple Inc.
+              Health technology is not a substitute for professional medical advice, diagnosis or treatment. Please consult a qualified healthcare professional about your health.
             </p>
           </div>
         </div>

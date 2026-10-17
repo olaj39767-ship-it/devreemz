@@ -5,9 +5,6 @@ import { trackEvent } from '../utils/analytics';
 import {
   ShoppingBag,
   Phone,
-  ArrowLeftRight,
-  ShieldCheck,
-  Search,
   Instagram,
   ArrowRight,
   X,
@@ -30,9 +27,6 @@ export const BioLinksView: React.FC<BioLinksViewProps> = ({
   config,
   inventoryCount,
   onBrowseCatalog,
-  onOpenTradeIn,
-  onOpenGuide,
-  onOpenWarrantyLookup,
   onClose,
 }) => {
   const handleChatWhatsApp = () => {
@@ -64,7 +58,7 @@ export const BioLinksView: React.FC<BioLinksViewProps> = ({
             {config.businessName}
           </h1>
           <p className="text-xs text-[#C0C7D2] max-w-xs mx-auto">
-            Verified iPhones &amp; MacBooks in Lagos • Inspected before you pay • No stories
+            Health monitors, smart wearables and mobility technology in Lagos.
           </p>
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold">
@@ -75,7 +69,7 @@ export const BioLinksView: React.FC<BioLinksViewProps> = ({
 
         {/* Large Links Buttons - Requirement G.1 */}
         <div className="space-y-3 pt-2">
-          {/* 1. Browse iPhones */}
+          {/* 1. Browse health technology */}
           <button
             onClick={() => {
               onClose();
@@ -85,7 +79,7 @@ export const BioLinksView: React.FC<BioLinksViewProps> = ({
           >
             <div className="flex items-center gap-3">
               <ShoppingBag className="w-5 h-5 text-[#1E6BFF]" />
-              <span>Browse In-Stock iPhones ({inventoryCount})</span>
+              <span>Browse Health Tech ({inventoryCount})</span>
             </div>
             <ArrowRight className="w-4 h-4 text-gray-400" />
           </button>
@@ -102,50 +96,6 @@ export const BioLinksView: React.FC<BioLinksViewProps> = ({
             <ExternalLink className="w-4 h-4 text-emerald-200" />
           </button>
 
-          {/* 3. Trade In */}
-          <button
-            onClick={() => {
-              onClose();
-              onOpenTradeIn();
-            }}
-            className="w-full min-h-[52px] p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-[#C0C7D2]/30 text-white font-bold text-sm shadow-xs active:scale-98 transition-all flex items-center justify-between cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <ArrowLeftRight className="w-5 h-5 text-amber-400" />
-              <span>Instant iPhone Trade-In Value</span>
-            </div>
-            <ArrowRight className="w-4 h-4 text-[#C0C7D2]" />
-          </button>
-
-          {/* 4. Verification Guide */}
-          <button
-            onClick={() => {
-              onClose();
-              onOpenGuide();
-            }}
-            className="w-full min-h-[52px] p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-[#C0C7D2]/30 text-white font-bold text-sm shadow-xs active:scale-98 transition-all flex items-center justify-between cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="w-5 h-5 text-[#1E6BFF]" />
-              <span>iPhone Battery &amp; iCloud Guide</span>
-            </div>
-            <ArrowRight className="w-4 h-4 text-[#C0C7D2]" />
-          </button>
-
-          {/* 5. Warranty Lookup */}
-          <button
-            onClick={() => {
-              onClose();
-              onOpenWarrantyLookup();
-            }}
-            className="w-full min-h-[52px] p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-[#C0C7D2]/30 text-white font-bold text-sm shadow-xs active:scale-98 transition-all flex items-center justify-between cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <Search className="w-5 h-5 text-purple-400" />
-              <span>Verify IMEI Warranty Status</span>
-            </div>
-            <ArrowRight className="w-4 h-4 text-[#C0C7D2]" />
-          </button>
         </div>
 
         {/* Location & Disclaimer */}
@@ -155,7 +105,7 @@ export const BioLinksView: React.FC<BioLinksViewProps> = ({
             <span>Pickup Hub: {config.pickupLocation}</span>
           </p>
           <p className="text-[10px] text-gray-500 pt-2">
-            Devreemz Gadget is an independent retailer and is not affiliated with Apple Inc.
+            Health technology does not replace professional medical advice. Please consult a qualified healthcare professional about your health.
           </p>
         </div>
       </div>

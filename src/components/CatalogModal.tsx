@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { GadgetItem, StoreConfig } from '../types';
 import { ProductCard } from './ProductCard';
 import { X, Search, Filter, Sliders, Check, RotateCcw } from 'lucide-react';
@@ -26,11 +26,18 @@ export const CatalogModal: React.FC<CatalogModalProps> = ({
   const [maxBudgetFilter, setMaxBudgetFilter] = useState<number | undefined>(initialFilter?.maxBudget);
   const [priceSort, setPriceSort] = useState<'default' | 'asc' | 'desc'>('default');
 
+  useEffect(() => {
+    if (!isOpen) return;
+    setSelectedCategory(initialFilter?.category || 'all');
+    setMaxBudgetFilter(initialFilter?.maxBudget);
+  }, [isOpen, initialFilter?.category, initialFilter?.maxBudget]);
+
   const categories = [
     { label: 'All Devices', value: 'all' },
-    { label: 'iPhones', value: 'phones' },
-    { label: 'MacBooks', value: 'laptops' },
-    { label: 'Tablets', value: 'tablets' },
+    { label: 'Health Monitors', value: 'health-monitors' },
+    { label: 'Smartwatches', value: 'smartwatches' },
+    { label: 'Smart Rings', value: 'smart-rings' },
+    { label: 'Mobility', value: 'mobility' },
     { label: 'Accessories', value: 'accessories' },
   ];
 
@@ -61,9 +68,7 @@ export const CatalogModal: React.FC<CatalogModalProps> = ({
       if (selectedCategory !== 'all') {
         const itemCat = (item.category || '').toLowerCase();
         const selCat = selectedCategory.toLowerCase();
-        if (selCat === 'phones' && itemCat !== 'phones' && itemCat !== 'iphone') return false;
-        if (selCat === 'laptops' && itemCat !== 'laptops' && itemCat !== 'macbook') return false;
-        if (selCat !== 'phones' && selCat !== 'laptops' && itemCat !== selCat) return false;
+        if (selCat !== itemCat) return false;
       }
 
       // Condition
@@ -124,7 +129,7 @@ export const CatalogModal: React.FC<CatalogModalProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by iPhone model, storage, color, or condition (e.g. 16 Pro Max, 256GB, Titanium)..."
+              placeholder="Search health monitors, wearables, mobility devices..."
               className="w-full pl-10 pr-9 py-2.5 bg-slate-50 text-[#0A1628] text-xs sm:text-sm rounded-xl border border-gray-200 focus:bg-white focus:outline-none focus:border-[#1E6BFF] transition-colors placeholder:text-gray-400 min-h-[44px]"
             />
             {searchQuery && (

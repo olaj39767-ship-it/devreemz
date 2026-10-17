@@ -19,7 +19,7 @@ export const WantListModal: React.FC<WantListModalProps> = ({
   initialQuery = '',
   onSubmitSuccess,
 }) => {
-  const [model, setModel] = useState(initialQuery || 'iPhone 16 Pro Max');
+  const [model, setModel] = useState(initialQuery || '');
   const [storage, setStorage] = useState('256GB');
   const [color, setColor] = useState('Natural Titanium');
   const [budget, setBudget] = useState('1800000');
@@ -110,7 +110,7 @@ export const WantListModal: React.FC<WantListModalProps> = ({
               required
               value={model}
               onChange={(e) => setModel(e.target.value)}
-              placeholder="e.g. iPhone 16 Pro Max or MacBook Air M3"
+              placeholder="e.g. blood pressure monitor, smart ring, power wheelchair"
               className="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-gray-300 rounded-xl text-xs sm:text-sm text-[#0A1628] font-semibold focus:bg-white focus:outline-none focus:border-[#1E6BFF]"
             />
           </div>

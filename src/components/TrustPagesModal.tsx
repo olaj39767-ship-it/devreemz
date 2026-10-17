@@ -58,7 +58,7 @@ export const TrustPagesModal: React.FC<TrustPagesModalProps> = ({
                     Founded by Reemz &amp; Tech Enthusiasts in Lagos
                   </h3>
                   <p className="text-xs text-gray-500 mt-1">
-                    "We built Devreemz Gadget because buying an iPhone in Lagos shouldn't feel like a gamble. We test every single device, confirm real battery cycles, and make sure you hold and test the phone before paying."
+                    "We built Devreemz Gadget to make useful health technology easier to discover. Our team helps customers compare options and understand product details before they choose."
                   </p>
                 </div>
               </div>
@@ -66,7 +66,7 @@ export const TrustPagesModal: React.FC<TrustPagesModalProps> = ({
               <div className="space-y-2">
                 <h4 className="font-bold text-[#0A1628]">Our Mission</h4>
                 <p>
-                  Devreemz Gadget provides verified Apple hardware to developers, creative professionals, and tech lovers across Nigeria. We eliminated the gimmicks: no fake battery boosters, no locked iCloud surprises, and no high-pressure automated checkout gates.
+                  Devreemz Gadget helps people across Nigeria explore health monitors, smart wearables and mobility devices with clear product information and personal support.
                 </p>
               </div>
 
@@ -84,7 +84,7 @@ export const TrustPagesModal: React.FC<TrustPagesModalProps> = ({
               <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-blue-950 space-y-1">
                 <h4 className="font-bold text-sm">Devreemz Guarantee Overview</h4>
                 <p className="text-xs">
-                  Every product listed on our store comes with a written warranty slip and verified IMEI record in our database.
+                  Warranty coverage varies by product. Ask our team to confirm the applicable warranty and support details before ordering.
                 </p>
               </div>
 

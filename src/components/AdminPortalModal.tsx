@@ -7,7 +7,8 @@ import {
   WarrantyRecord,
   TradeInPricingMatrix,
   UnitAvailabilityStatus,
-  ConditionGrade
+  ConditionGrade,
+  GadgetCategory
 } from '../types';
 import { getStoredAnalytics } from '../utils/analytics';
 import { formatNaira } from '../utils/whatsapp';
@@ -97,20 +98,22 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   // Product Form State
   const [editingItem, setEditingItem] = useState<GadgetItem | null>(null);
   const [formName, setFormName] = useState('');
+  const [formBrand, setFormBrand] = useState('');
   const [formModel, setFormModel] = useState('');
-  const [formStorage, setFormStorage] = useState('256GB');
-  const [formColor, setFormColor] = useState('Desert Titanium');
+  const [formCategory, setFormCategory] = useState<GadgetCategory>('health-monitors');
+  const [formStorage, setFormStorage] = useState('');
+  const [formColor, setFormColor] = useState('');
   const [formCondition, setFormCondition] = useState<ConditionGrade>('Like New');
   const [formStatus, setFormStatus] = useState<UnitAvailabilityStatus>('Available');
-  const [formPrice, setFormPrice] = useState<number>(1850000);
+  const [formPrice, setFormPrice] = useState<number>(0);
   const [formOriginalPrice, setFormOriginalPrice] = useState<number | undefined>(undefined);
   const [formStock, setFormStock] = useState<number>(2);
-  const [formBattery, setFormBattery] = useState('100% Battery Health');
+  const [formBattery, setFormBattery] = useState('');
   const [formBatteryScreenshot, setFormBatteryScreenshot] = useState('');
-  const [formWarranty, setFormWarranty] = useState('7-Day In-House Replacement Warranty');
-  const [formMaskedImei, setFormMaskedImei] = useState('358941******104');
-  const [formIcloudStatus, setFormIcloudStatus] = useState('Clean / FMI Off');
-  const [formPartsReplaced, setFormPartsReplaced] = useState('All OEM Original — None Replaced');
+  const [formWarranty, setFormWarranty] = useState('');
+  const [formMaskedImei, setFormMaskedImei] = useState('');
+  const [formIcloudStatus, setFormIcloudStatus] = useState('');
+  const [formPartsReplaced, setFormPartsReplaced] = useState('');
   const [formImage, setFormImage] = useState('');
   const [formGalleryText, setFormGalleryText] = useState('');
   const [formDescription, setFormDescription] = useState('');
@@ -164,9 +167,11 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   const startEditItem = (item: GadgetItem) => {
     setEditingItem(item);
     setFormName(item.name);
+    setFormBrand(item.brand);
     setFormModel(item.model || item.name);
-    setFormStorage(item.storage || '128GB');
-    setFormColor(item.color || 'Original');
+    setFormCategory(item.category);
+    setFormStorage(item.storage || '');
+    setFormColor(item.color || '');
     setFormCondition(item.condition);
     setFormStatus(item.status || 'Available');
     setFormPrice(item.price);
@@ -176,7 +181,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
     setFormBatteryScreenshot(item.batteryScreenshot || '');
     setFormWarranty(item.warranty);
     setFormMaskedImei(item.maskedImei || '');
-    setFormIcloudStatus(item.icloudStatus || 'Clean / FMI Off');
+    setFormIcloudStatus(item.icloudStatus || '');
     setFormPartsReplaced(item.partsReplaced || 'All OEM Original');
     setFormImage(item.image);
     setFormGalleryText((item.gallery || []).join('\n'));
@@ -189,21 +194,23 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   const startAddNew = () => {
     setEditingItem(null);
     setFormName('');
+    setFormBrand('');
     setFormModel('');
-    setFormStorage('256GB');
-    setFormColor('Natural Titanium');
+    setFormCategory('health-monitors');
+    setFormStorage('');
+    setFormColor('');
     setFormCondition('Like New');
     setFormStatus('Available');
-    setFormPrice(1500000);
+    setFormPrice(0);
     setFormOriginalPrice(undefined);
     setFormStock(2);
-    setFormBattery('100% Battery Health');
+    setFormBattery('');
     setFormBatteryScreenshot('');
-    setFormWarranty('7-Day In-House Replacement Warranty');
+    setFormWarranty('');
     setFormMaskedImei('');
-    setFormIcloudStatus('Clean / FMI Off');
-    setFormPartsReplaced('All OEM Original — None Replaced');
-    setFormImage('https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=1000&q=80');
+    setFormIcloudStatus('');
+    setFormPartsReplaced('');
+    setFormImage('');
     setFormGalleryText('');
     setFormDescription('');
     setActiveTab('add');
@@ -213,8 +220,8 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   // Save Product (Add or Update)
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formName.trim() || formPrice <= 0) {
-      alert('Please enter a valid product name and price.');
+    if (!formName.trim() || !formBrand.trim() || formPrice <= 0) {
+      alert('Please enter a product name, brand, and valid price.');
       return;
     }
 
@@ -231,7 +238,9 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
           return {
             ...it,
             name: formName.trim(),
+            brand: formBrand.trim(),
             model: formModel.trim() || formName.trim(),
+            category: formCategory,
             storage: formStorage.trim(),
             color: formColor.trim(),
             condition: formCondition,
@@ -260,11 +269,11 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
       const newItem: GadgetItem = {
         id: `DG-${Date.now().toString().slice(-6)}`,
         name: formName.trim(),
-        brand: 'Apple',
+        brand: formBrand.trim(),
         model: formModel.trim() || formName.trim(),
         storage: formStorage.trim(),
         color: formColor.trim(),
-        category: 'phones',
+        category: formCategory,
         condition: formCondition,
         status: formStatus,
         isNew,
@@ -277,34 +286,18 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
           Color: formColor.trim(),
           Condition: formCondition,
         },
-        whatsIncluded: ['Original USB-C Cable', 'Devreemz Warranty Card'],
-        warranty: formWarranty.trim(),
-        description: formDescription.trim() || `${formName}. Certified by Devreemz Gadget.`,
-        image: formImage.trim() || 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=1000&q=80',
+        whatsIncluded: [],
+        warranty: formWarranty.trim() || 'Contact us for warranty details',
+        description: formDescription.trim() || `${formName}. Contact us for product details and availability.`,
+        image: formImage.trim() || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1000&q=80',
         gallery: galleryUrls.length > 0 ? galleryUrls : [formImage.trim()],
         batteryHealth: formBattery.trim() || undefined,
         batteryScreenshot: formBatteryScreenshot.trim() || undefined,
         maskedImei: formMaskedImei.trim() || undefined,
-        icloudStatus: formIcloudStatus.trim() || 'Clean / FMI Off',
-        partsReplaced: formPartsReplaced.trim() || 'All OEM Original',
+        icloudStatus: formIcloudStatus.trim() || undefined,
+        partsReplaced: formPartsReplaced.trim() || undefined,
         featured: false,
         isDemo: false,
-        verificationReport: {
-          inspectionDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-          inspector: 'Devreemz QA Specialist',
-          overallVerdict: isNew ? 'Sealed Brand New' : 'Grade A+ Passed',
-          imeiStatus: 'Clean GSMA / Whitelisted',
-          icloudStatus: 'Clean / Unlocked',
-          screenOEM: true,
-          batteryOEM: true,
-          cameraOEM: true,
-          housingCondition: 'Certified Clean',
-          checks: [
-            { category: 'Display', name: 'Original OLED & Touch', passed: true, detail: 'Pass' },
-            { category: 'Sensors', name: 'Face ID & Biometrics', passed: true, detail: 'Pass' },
-            { category: 'Cameras', name: 'Front & Rear Optics', passed: true, detail: 'Pass' },
-          ],
-        },
       };
 
       onUpdateInventory([newItem, ...inventory]);
@@ -828,9 +821,41 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                         required
                         value={formName}
                         onChange={(e) => setFormName(e.target.value)}
-                        placeholder="e.g. iPhone 16 Pro Max 256GB Desert Titanium"
+                        placeholder="e.g. Upper Arm Blood Pressure Monitor"
                         className="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-gray-300 rounded-xl text-xs sm:text-sm font-semibold text-[#0A1628]"
                       />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-[#0A1628] mb-1">
+                          Brand <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formBrand}
+                          onChange={(e) => setFormBrand(e.target.value)}
+                          placeholder="e.g. Omron"
+                          className="w-full min-h-[44px] px-3 py-2 bg-slate-50 border border-gray-300 rounded-xl text-xs text-[#0A1628]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-[#0A1628] mb-1">
+                          Category
+                        </label>
+                        <select
+                          value={formCategory}
+                          onChange={(e) => setFormCategory(e.target.value as GadgetCategory)}
+                          className="w-full min-h-[44px] px-3 py-2 bg-slate-50 border border-gray-300 rounded-xl text-xs text-[#0A1628] font-bold"
+                        >
+                          <option value="health-monitors">Health monitors</option>
+                          <option value="smartwatches">Smartwatches</option>
+                          <option value="smart-rings">Smart rings</option>
+                          <option value="mobility">Mobility devices</option>
+                          <option value="accessories">Accessories</option>
+                        </select>
+                      </div>
                     </div>
 
                     {/* Model, Storage, Color */}
@@ -843,7 +868,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                           type="text"
                           value={formModel}
                           onChange={(e) => setFormModel(e.target.value)}
-                          placeholder="iPhone 16 Pro Max"
+                          placeholder="Product model"
                           className="w-full min-h-[44px] px-3 py-2 bg-slate-50 border border-gray-300 rounded-xl text-xs text-[#0A1628]"
                         />
                       </div>
@@ -856,7 +881,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                           type="text"
                           value={formStorage}
                           onChange={(e) => setFormStorage(e.target.value)}
-                          placeholder="256GB"
+                          placeholder="Optional"
                           className="w-full min-h-[44px] px-3 py-2 bg-slate-50 border border-gray-300 rounded-xl text-xs text-[#0A1628]"
                         />
                       </div>
@@ -869,7 +894,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                           type="text"
                           value={formColor}
                           onChange={(e) => setFormColor(e.target.value)}
-                          placeholder="Desert Titanium"
+                          placeholder="Optional"
                           className="w-full min-h-[44px] px-3 py-2 bg-slate-50 border border-gray-300 rounded-xl text-xs text-[#0A1628]"
                         />
                       </div>
@@ -957,13 +982,13 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-bold text-[#0A1628] mb-1">
-                          Battery Health (Leave empty if none)
+                          Battery / runtime notes (optional)
                         </label>
                         <input
                           type="text"
                           value={formBattery}
                           onChange={(e) => setFormBattery(e.target.value)}
-                          placeholder="e.g. 100% Battery Health"
+                          placeholder="e.g. Up to 7 days per charge"
                           className="w-full min-h-[44px] px-3 py-2 bg-slate-50 border border-gray-300 rounded-xl text-xs text-[#0A1628]"
                         />
                       </div>
@@ -982,11 +1007,11 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                       </div>
                     </div>
 
-                    {/* Masked IMEI & iCloud Status */}
+                    {/* Product identifiers and compatibility notes */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-bold text-[#0A1628] mb-1">
-                          Masked IMEI for Security
+                          Product identifier (optional)
                         </label>
                         <input
                           type="text"
@@ -999,7 +1024,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
 
                       <div>
                         <label className="block text-xs font-bold text-[#0A1628] mb-1">
-                          iCloud / FMI Status
+                          Compatibility / setup notes (optional)
                         </label>
                         <input
                           type="text"
@@ -1061,7 +1086,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                         rows={2}
                         value={formDescription}
                         onChange={(e) => setFormDescription(e.target.value)}
-                        placeholder="Tested in Lagos hub, flawless Grade A+ condition..."
+                        placeholder="Describe the product, its features, and any important usage notes..."
                         className="w-full p-2.5 bg-slate-50 border border-gray-300 rounded-xl text-xs text-[#0A1628]"
                       />
                     </div>
@@ -1145,7 +1170,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                         type="text"
                         value={warModel}
                         onChange={(e) => setWarModel(e.target.value)}
-                        placeholder="iPhone 16 Pro Max 256GB"
+                        placeholder="Health device model"
                         className="w-full min-h-[40px] px-3 py-2 bg-slate-50 border border-gray-300 rounded-xl"
                       />
                     </div>
@@ -1206,7 +1231,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                           type="text"
                           value={revDevice}
                           onChange={(e) => setRevDevice(e.target.value)}
-                          placeholder="iPhone 16 Pro Max"
+                          placeholder="Health device or accessory"
                           className="w-full min-h-[40px] px-3 py-2 bg-slate-50 border border-gray-300 rounded-xl"
                         />
                       </div>

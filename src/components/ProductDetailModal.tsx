@@ -80,13 +80,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         </td>
         <td style="padding: 10px; color: #64748b;">${c.detail}</td>
       </tr>
-    `).join('') || '<tr><td colspan="3" style="padding: 10px;">Full hardware diagnostics passed.</td></tr>';
+    `).join('') || '<tr><td colspan="3" style="padding: 10px;">No inspection checklist is available for this product.</td></tr>';
 
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Devreemz Gadget Verification Certificate - ${item.name}</title>
+          <title>Devreemz Gadget Product Details - ${item.name}</title>
           <style>
             body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #0f172a; max-width: 800px; margin: auto; }
             .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 20px; }
@@ -102,18 +102,18 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <h1 style="margin: 0; font-size: 24px; color: #0f172a;">DEVREEMZ GADGET</h1>
               <p style="margin: 4px 0 0; color: #64748b; font-size: 13px;">Safe Exchange Hub • Victoria Island, Lagos • +234 903 847 6114</p>
             </div>
-            <div class="badge">OFFICIAL QA VERIFIED</div>
+            <div class="badge">PRODUCT DETAILS</div>
           </div>
 
           <div style="margin-top: 25px; padding: 16px; background: #f8fafc; border-radius: 8px;">
             <h2 style="margin: 0 0 10px; font-size: 18px;">${item.name}</h2>
             <p style="margin: 4px 0; font-size: 14px;"><strong>Unit ID:</strong> ${item.id} | <strong>Condition:</strong> ${item.condition}</p>
-            <p style="margin: 4px 0; font-size: 14px;"><strong>IMEI Status:</strong> ${item.maskedImei || 'Verified Clean'} | <strong>iCloud Status:</strong> ${item.icloudStatus || 'Clean / FMI Off'}</p>
-            <p style="margin: 4px 0; font-size: 14px;"><strong>Battery Health:</strong> ${item.batteryHealth || 'Verified Optimal'} | <strong>Parts Replaced:</strong> ${item.partsReplaced || 'OEM Original'}</p>
-            <p style="margin: 4px 0; font-size: 14px;"><strong>Inspection Date:</strong> ${report?.inspectionDate || 'Recently Verified'} | <strong>Inspector:</strong> ${report?.inspector || 'QA Senior Engineer'}</p>
+            <p style="margin: 4px 0; font-size: 14px;"><strong>Brand / Model:</strong> ${item.brand} ${item.model}</p>
+            <p style="margin: 4px 0; font-size: 14px;"><strong>Condition:</strong> ${item.condition} | <strong>Warranty:</strong> ${item.warranty || 'Please ask us for details'}</p>
+            ${report ? `<p style="margin: 4px 0; font-size: 14px;"><strong>Inspection Date:</strong> ${report.inspectionDate} | <strong>Inspector:</strong> ${report.inspector}</p>` : ''}
           </div>
 
-          <h3 style="margin-top: 30px; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Diagnostic Verification Checklist</h3>
+          <h3 style="margin-top: 30px; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Product Inspection Checklist</h3>
           <table>
             <thead>
               <tr>
@@ -129,7 +129,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           <div class="footer">
             <p><strong>Devreemz Gadget Policy:</strong> Every customer is entitled to test and physically inspect this unit before making payment.</p>
-            <p>Devreemz Gadget is an independent retailer and is not affiliated with Apple Inc.</p>
+            <p>For health-related concerns, consult a qualified healthcare professional.</p>
           </div>
           <script>
             window.onload = () => { window.print(); };
@@ -347,45 +347,36 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             )}
           </div>
 
-          {/* TAB 1: Specs & Security Verification (Masked IMEI, iCloud, Parts) */}
+          {/* TAB 1: Product details and optional inspection report */}
           {activeTab === 'overview' && (
             <div className="space-y-4">
-              {/* Trust Indicators: IMEI, iCloud, Parts Replaced */}
+              {/* Product identity, condition and warranty */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="p-3 bg-slate-50 rounded-xl border border-gray-200">
                   <span className="text-[10px] uppercase font-bold text-gray-500 block">
-                    IMEI Status
+                    Product
                   </span>
                   <p className="text-xs font-bold text-[#0A1628] mt-0.5 truncate">
-                    {item.maskedImei || '358941******104'}
+                    {item.brand} {item.model}
                   </p>
-                  <span className="text-[10px] text-emerald-700 font-semibold block mt-0.5">
-                    ✓ Clean / Whitelisted
-                  </span>
                 </div>
 
                 <div className="p-3 bg-slate-50 rounded-xl border border-gray-200">
                   <span className="text-[10px] uppercase font-bold text-gray-500 block">
-                    iCloud / Activation
+                    Condition
                   </span>
                   <p className="text-xs font-bold text-[#0A1628] mt-0.5 truncate">
-                    {item.icloudStatus || 'Clean / FMI Off'}
+                    {item.condition}
                   </p>
-                  <span className="text-[10px] text-emerald-700 font-semibold block mt-0.5">
-                    ✓ Ready for New Apple ID
-                  </span>
                 </div>
 
                 <div className="p-3 bg-slate-50 rounded-xl border border-gray-200">
                   <span className="text-[10px] uppercase font-bold text-gray-500 block">
-                    Parts & Service History
+                    Warranty
                   </span>
                   <p className="text-xs font-bold text-[#0A1628] mt-0.5 truncate">
-                    {item.partsReplaced || 'All OEM Original'}
+                    {item.warranty || 'Ask us for details'}
                   </p>
-                  <span className="text-[10px] text-emerald-700 font-semibold block mt-0.5">
-                    ✓ No Replaced Component Warnings
-                  </span>
                 </div>
               </div>
 
@@ -459,17 +450,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {/* Verification Checklist */}
               <div className="space-y-2">
                 <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                  Hardware & Component Checklist
+                  Product Inspection Checklist
                 </h4>
                 <div className="space-y-1.5">
-                  {(item.verificationReport?.checks || [
-                    { category: 'Display', name: 'Original OLED & True Tone Active', passed: true, detail: 'Original Apple panel' },
-                    { category: 'Biometrics', name: 'Face ID / TrueDepth Sensor', passed: true, detail: 'Passed 100%' },
-                    { category: 'Cameras', name: 'Rear & Front Sensors + 4K Video', passed: true, detail: 'Pass' },
-                    { category: 'Audio', name: 'Stereo Loudspeakers & Mic Array', passed: true, detail: 'Pass' },
-                    { category: 'Battery', name: 'Peak Performance Capability', passed: true, detail: item.batteryHealth || '100% Health' },
-                    { category: 'Wireless', name: 'Cellular 5G, Wi-Fi & Bluetooth', passed: true, detail: 'Tested with Lagos SIMs' },
-                  ]).map((check, idx) => (
+                  {item.verificationReport?.checks?.length ? item.verificationReport.checks.map((check, idx) => (
                     <div
                       key={idx}
                       className="p-3 bg-slate-50 rounded-xl border border-gray-200 flex items-center justify-between gap-3 text-xs"
@@ -489,7 +473,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         PASS
                       </span>
                     </div>
-                  ))}
+                  )) : (
+                    <p className="text-xs text-gray-600">
+                      No separate inspection checklist is available for this product. Contact us to confirm condition, compatibility and warranty details.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
